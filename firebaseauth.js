@@ -1,19 +1,20 @@
-// Importa as funções necessárias do firebase
+// Importa as funções necessárias do Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, GoogleProvider, signInWithPopup, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
- 
-// Configuração do Firebase
+
+// Configurações do Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDVxt0Ve_wy4AcU6mJRevd_d4SH7ayw1Tg",
-    authDomain: "openidconnect-d3271.firebaseapp.com",
-    projectId: "openidconnect-d3271",
-    storageBucket: "openidconnect-d3271.firebasestorage.app",
-    messagingSenderId: "663226239318",
-    appId: "1:663226239318:web:5f0a728a8880b009392ef7"
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
 };
 
-// Inicializa o firebase
+// Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 
 // Função para exibir mensagens temporárias na interface
@@ -24,71 +25,71 @@ function showMessage(message, divId) {
     messageDiv.style.opacity = 1;
     setTimeout(function() {
         messageDiv.style.opacity = 0;
-    }, 5000); //A mensagem desaparece após 5 segundos
+    }, 5000); // A mensagem desaparece após 5 segundos
 }
 
 // Lógica de cadastro de novos usuários
-const signUp = document.getElementById("submitSignUp");
-signUp.addEventListener("click", (event) => {
-    event.preventDefault(); //Previne o comportamento padrão do botão
+const signUp = document.getElementById('submitSignUp');
+signUp.addEventListener('click', (event) => {
+    event.preventDefault(); // Previne o comportamento padrão do botão
 
-    // Adicionar os dados do formulário de cadastro
-    const email = document.getElementById("rEmail").value;
-    const password = document.getElementById("rPassword").value;
-    const firstName = document.getElementById("fName").value;
-    const lastName = document.getElementById("lName").value
+    // Captura os dados do formulário de cadastro
+    const email = document.getElementById('rEmail').value;
+    const password = document.getElementById('rPassword').value;
+    const firstName = document.getElementById('fName').value;
+    const lastName = document.getElementById('lName').value;
 
     const auth = getAuth(); // Configura o serviço de autenticação
-    const db = getFirestore();
+    const db = getFirestore(); // Conecta ao Firestore
 
     // Cria uma conta com e-mail e senha
-    createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-        const user = userCredential.user; //Usuário Autenticado
-        const userData = { email, firstName, LastName}; // Dados do usuário para salvar
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+        const user = userCredential.user; // Usuário autenticado
+        const userData = { email, firstName, lastName }; // Dados do usuário para salvar
 
-        showMessage("Conta criada com sucesso", "signUpMessage"); // Exibe mensagem de sucesso
+        showMessage('Conta criada com sucesso', 'signUpMessage'); // Exibe mensagem de sucesso
 
-        //Salva os dados do usuário no Firestore
+        // Salva os dados do usuário no Firestore
         const docRef = doc(db, "users", user.uid);
         setDoc(docRef, userData)
         .then(() => {
-            window.location.href = "index.html"; // Redireciona para a página de login após o cadastro
+            window.location.href = 'index.html'; // Redireciona para a página de login após cadastro
         })
         .catch((error) => {
-            console.error("Erro writing document", error);
-        })
+            console.error("Error writing document", error);
+        });
     })
     .catch((error) => {
         const errorCode = error.code;
-        if (errorCode == "auth/email-already-in-use") {
-            showMessage("Endereço de email já existe")
+        if (errorCode == 'auth/email-already-in-use') {
+            showMessage('Endereço de email já existe', 'signUpMessage');
         } else {
-            showMessage("Não é possível criar usuário", "signUpMessage");
+            showMessage('não é possível criar usuário', 'signUpMessage');
         }
     });
 });
 
-// Lógica de login de usuários
-
-const signIn = document.getElementById("submitSignIn");
-signIn.addEventListener("click", (event) => {
+// Lógica de login de usuários existentes
+const signIn = document.getElementById('submitSignIn');
+signIn.addEventListener('click', (event) => {
     event.preventDefault(); // Previne o comportamento padrão do botão
 
-    // Adiciona os dados do formulario de login
-    const email = document.getElementById("rEmail").value;
-    const password = document.getElementById("rPassword").value;
+    // Captura os dados do formulário de login
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     const auth = getAuth(); // Configura o serviço de autenticação
 
     // Realiza o login com e-mail e senha
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-        showMessage('Usuário logado com sucesso!', 'signInMessage');
+        showMessage('usuário logado com sucesso', 'signInMessage'); // Exibe mensagem de sucesso
         const user = userCredential.user;
 
-        // salva o ID do usuário no localStorage
-        localStorage.setItem('loggedInUserID', user.uid);
+        // Salva o ID do usuário no localStorage
+        localStorage.setItem('loggedInUserId', user.uid);
 
-        window.location.href = 'homepage.html'; //Redireciona para a página inicial
+        window.location.href = 'homepage.html'; // Redireciona para a página inicial
     })
     .catch((error) => {
         const errorCode = error.code;

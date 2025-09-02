@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #ff4400, #00BBFA);
+    background: linear-gradient(135deg, #EB460A, #00BBFA);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -170,4 +170,4 @@ body {
     .icons i {
         font-size: 1.2rem;
     }
-}   
+}
